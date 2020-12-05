@@ -1,0 +1,20 @@
+import sys
+
+from aoc_input import get_input
+
+if __name__ == "__main__":
+	if len(sys.argv) < 3:
+		print("Specify which visualization to run! [year, day]")
+		sys.exit()
+
+	try:
+		year = int(sys.argv[1])
+		day = int(sys.argv[2])
+	except ValueError:
+		print("Integer required!")
+		sys.exit()
+
+	exec(
+		f"import y{year}.vis.v{day:>02}\n"
+		f"y{year}.vis.v{day:>02}.main(get_input({year}, {day}))"
+	)
