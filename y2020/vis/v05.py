@@ -447,3 +447,8 @@ def main(pz_in):
 	except Exception as e:
 		PlaneVisualization.stop_curses(None)
 		raise e from None
+
+if __name__ == "__main__":
+	# In order to run this file with your own puzzle input, you'll need to add an open
+	# statement here and pass the input to main as a simple string.
+	main(None)
