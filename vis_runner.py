@@ -1,3 +1,4 @@
+import importlib
 import sys
 
 from aoc_input import get_input
@@ -14,7 +15,5 @@ if __name__ == "__main__":
 		print("Integer required!")
 		sys.exit()
 
-	exec(
-		f"import y{year}.vis.v{day:>02}\n"
-		f"y{year}.vis.v{day:>02}.main(get_input({year}, {day}))"
-	)
+	module = importlib.import_module(f"y{year}.vis.v{day:>02}")
+	module.main(get_input(year, day))

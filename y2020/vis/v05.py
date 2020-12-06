@@ -334,7 +334,7 @@ class PlaneVisualization():
 			self.active_win.addstr(0, 1, f"{i: ^{SPEC_SCROLLER_OFFSETX - 2}}")
 			self.active_win.refresh()
 
-			# Visualize binary subdivision for first three specs
+			# Visualize binary subdivision for first few specs
 			if i < VISUALIZE_BIN_SEARCH_FIRST:
 				self.vis_binsearch(i, spec, _pos_remember, cmax_pos)
 
