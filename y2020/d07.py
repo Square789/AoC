@@ -6,6 +6,11 @@ import re
 DAY = 7
 YEAR = 2020
 
+SEARCHED_BAG = "shiny gold"
+
+BAG_EXP = re.compile(r"^(.*?) bags contain (.*)\.$")
+CONT_EXP = re.compile("(\d+) (.*?) bag[s]?")
+
 class Bag:
 	def __init__(self, color, holdable):
 		self.color = color
@@ -29,11 +34,6 @@ def build_bag_graph(pzin):
 			bags[name].parents.append(bagspec)
 
 	return bags
-
-SEARCHED_BAG = "shiny gold"
-
-BAG_EXP = re.compile(r"^(.*?) bags contain (.*)\.$")
-CONT_EXP = re.compile("(\d+) (.*?) bag[s]?")
 
 def rec_visit(bagspec, targets, visited_already, can_hold_searched):
 	if any(target in bagspec.holdable_names for target in (targets | can_hold_searched)):
