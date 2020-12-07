@@ -24,6 +24,7 @@ def sol1(pzin):
 		q += len(answered)
 	return q
 
+
 def main():
 	puzzle_in = get_input(YEAR, DAY).split("\n\n")
 
