@@ -2,6 +2,7 @@ from aoc_input import get_input
 import aoc_helpers as ah
 
 import re
+from time import time
 
 DAY = 7
 YEAR = 2020
@@ -9,7 +10,7 @@ YEAR = 2020
 SEARCHED_BAG = "shiny gold"
 
 BAG_EXP = re.compile(r"^(.*?) bags contain (.*)\.$")
-CONT_EXP = re.compile("(\d+) (.*?) bag[s]?")
+CAN_CONTAIN_EXP = re.compile("(\d+) (.*?) bag[s]?")
 
 class Bag:
 	def __init__(self, color, holdable):
@@ -22,27 +23,26 @@ class Bag:
 def build_bag_graph(pzin):
 	bags = {}
 	for line in pzin:
-		bagcol, containspec = BAG_EXP.match(line).groups()
-		contains = CONT_EXP.findall(containspec)
+		bagcol, holdspec = BAG_EXP.match(line).groups()
+		can_hold = CAN_CONTAIN_EXP.findall(holdspec)
 		bags[bagcol] = Bag(
 			bagcol,
-			set((int(i), col) for i, col in contains),
+			set((int(i), col) for i, col in can_hold),
 		)
 
+	# Add each node's parents to it.
 	for color, bagspec in bags.items():
 		for name in bagspec.holdable_names:
 			bags[name].parents.append(bagspec)
 
 	return bags
 
-def rec_visit(bagspec, targets, visited_already, can_hold_searched):
+def rec_visit(bagspec, targets, can_hold_searched):
 	if any(target in bagspec.holdable_names for target in (targets | can_hold_searched)):
 		# print(f"{bagspec.color} can hold a container or the searched bag directly.")
 		can_hold_searched.add(bagspec.color)
 		for parent in bagspec.parents:
-			if parent.color in visited_already:
-				continue
-			rec_visit(parent, targets, visited_already, can_hold_searched)
+			rec_visit(parent, targets, can_hold_searched)
 
 def rec_count(bag_graph, bag_col):
 	acc = 0
@@ -55,10 +55,9 @@ def sol0(bag_graph):
 	can_hold_searched = set()
 
 	targets = {SEARCHED_BAG}
-	visited_already = set()
 
 	for bagspec in bag_graph.values():
-		rec_visit(bagspec, targets, visited_already, can_hold_searched)
+		rec_visit(bagspec, targets, can_hold_searched)
 	return len(can_hold_searched)
 
 def sol1(bag_graph):
