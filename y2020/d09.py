@@ -25,16 +25,20 @@ def sol0(pzin):
 
 def sol1(pzin):
 	NUM = 3199139634 # hardcoded
+	data_len = len(pzin)
 
-	for set_size in range(2, len(pzin) + 1):
-		for i in range(0, len(pzin) - set_size + 1):
+	for set_size in range(2, data_len + 1):
+		for i in range(0, data_len - set_size + 1):
 			cs = {*pzin[i:(i + set_size)]}
 			if sum(cs) == NUM:
 				return min(cs) + max(cs)
 	return None
 
 def main():
-	puzzle_in = [int(i) for i in get_input(YEAR, DAY).strip().split("\n")]
+	puzzle_in = [
+		int(i) for i in
+		get_input(YEAR, DAY).strip().split("\n")
+	]
 
 	for i, f in enumerate((sol0, sol1)):
 		res = f(puzzle_in.copy())
