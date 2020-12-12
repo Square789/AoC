@@ -40,7 +40,6 @@ def sol1(pzin):
 	wx = 10
 	wy = -1
 	for instrc in pzin:
-		print(x, y, "|", wx, wy)
 		cmd = instrc[0]
 		arg = int(instrc[1:])
 		if cmd == "N":
