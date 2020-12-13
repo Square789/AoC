@@ -14,7 +14,7 @@ def sol1(pzin):
 	pass
 
 def main():
-	puzzle_in = get_input(YEAR, DAY)
+	puzzle_in = get_input(YEAR, DAY).strip().split("\\n")
 
 	for i, f in enumerate((sol0, sol1)):
 		res = f(puzzle_in)
