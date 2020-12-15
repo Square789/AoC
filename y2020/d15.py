@@ -16,12 +16,11 @@ def nthnum(n, startingnumbers):
 		turn += 1
 	for _ in range(n - len(startingnumbers)):
 		if len(lastoccs[lastspk]) < 2:  # First time spoken
-			lastoccs[0].append(turn)
-			lastspk = 0
+			_spoken = 0
 		else:
 			_spoken = lastoccs[lastspk][1] - lastoccs[lastspk][0]
-			lastoccs[_spoken].append(turn)
-			lastspk = _spoken
+		lastoccs[_spoken].append(turn)
+		lastspk = _spoken
 		turn += 1
 	return lastspk
 
