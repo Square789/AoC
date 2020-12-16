@@ -56,7 +56,12 @@ def sol1(rules, own_ticket, tickets):
 				break
 		else:
 			raise ValueError("Can't reliably resolve")
-	return res
+
+	mul = 1
+	for key, value in res.items():
+		if key.startswith("departure"):
+			mul *= own_ticket[[*value][0]]
+	return mul
 
 def main():
 	puzzle_in = get_input(YEAR, DAY).strip().split("\n\n")
@@ -81,6 +86,8 @@ def main():
 		res = f(ticket_rules, own_ticket, other_tickets)
 		if res is None:
 			continue
+		if i == 0:
+			res = res[0]
 		print(
 			f"===[AoC 2020, {DAY}.{i} result:]===\n{res}\n"
 			f"{'='*len(str(DAY))}============================"
