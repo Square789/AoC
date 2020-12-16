@@ -5,7 +5,7 @@ import re
 try:
 	from tabulate import tabulate
 except ImportError:
-	tabulate = lambda _: print("The tabulate module seems to be missing")
+	tabulate = lambda *_: print("The tabulate module seems to be missing")
 
 RE_TICKET = re.compile(r"^(.*): (\d+)-(\d+) or (\d+)-(\d+)$")
 
