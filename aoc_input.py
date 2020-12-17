@@ -7,16 +7,17 @@ class UnexpectedResponseError(RuntimeError):
 def get_input(year, day):
 	thisdir = Path(__file__).parent / f"y{year}"
 
-	with open(Path(thisdir, "cookie.txt"), "r") as f:
-		SESSCOOKIE = f.read().strip()
-
 	with open(Path(thisdir, "input.json"), "r") as f:
 		data = {int(k): v for k, v in json.load(f).items()}
 
 	if day not in data:
 		import requests
+
+		with open(Path(thisdir, "cookie.txt"), "r") as f:
+			SESSCOOKIE = f.read().strip()
+
 		resp = requests.get(
-			f"https://adventofcode.com/2020/day/{day}/input",
+			f"https://adventofcode.com/{year}/day/{day}/input",
 			cookies = {
 				"session": SESSCOOKIE,
 			}
