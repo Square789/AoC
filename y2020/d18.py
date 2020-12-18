@@ -12,7 +12,7 @@ RE_VALUE = re.compile(r"(\d+)")
 
 # shoutouts to uni for the stuff below
 
-# Expression     => Term, Multiplication* ;
+# Expression     => Term + Multiplication* ;
 # Addition       => "+" + Unary ;
 # Term           => Unary + Addition* ;
 # Multiplication => "*" + Term ;
