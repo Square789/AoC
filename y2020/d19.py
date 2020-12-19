@@ -21,19 +21,12 @@ def rec_build_re(src, rules, patched8_11=False):
 	elif isinstance(rules[src], str):
 		res = rules[src]
 	else:
-		alts = rules[src]
-		if len(alts) == 1:
-			res = ("(?:" + ''.join(
-				rec_build_re(elem, rules, patched8_11)
-				for elem in alts[0]
+		res = ("(?:" + "|".join(
+				''.join(
+					rec_build_re(elem, rules, patched8_11)
+					for elem in alt
+				) for alt in rules[src]
 			) + ")")
-		else:
-			res = ("(?:" + "|".join(
-					''.join(
-						rec_build_re(elem, rules, patched8_11)
-						for elem in alt
-					) for alt in alts
-				) + ")")
 	return res
 
 def sol0(rules, data):
