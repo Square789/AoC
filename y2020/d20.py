@@ -94,7 +94,6 @@ def sol1(tiles):
 	# Tiles will be preprocessed by sol0
 	for tile in tiles:
 		tile.clip_border()
-		print(tile, tile.connectable)
 
 	tilemap_dim = len(tiles)**.5
 
