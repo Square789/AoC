@@ -40,13 +40,9 @@ def build_ing_all_map(pzin):
 					ing_all_map[ing2] = allset2 - allset
 				break
 
-	pprint(ing_all_map)
-
 	return ing_all_map
 
-def sol0(pzin):
-	ing_all_map = build_ing_all_map(pzin)
-
+def sol0(pzin, ing_all_map):
 	non_allergens = {ing for ing, allset in ing_all_map.items() if not allset}
 
 	count = 0
@@ -54,15 +50,11 @@ def sol0(pzin):
 		for non_allergen in non_allergens:
 			count += ings.count(non_allergen)
 
-	pprint(ing_all_map)
-
 	return count
 
 
 
-def sol1(pzin):
-	ing_all_map = build_ing_all_map(pzin)
-
+def sol1(_, ing_all_map):
 	return ",".join(e[0] for e in sorted(
 		[(k, [*v][0]) for k, v in ing_all_map.items() if v],
 		key=lambda x: x[1])
@@ -70,15 +62,17 @@ def sol1(pzin):
 
 def main():
 	puzzle_in = get_input(YEAR, DAY).strip().split("\n")
-	data = [
+	puzzle_in = [
 		(
 			[*map(str.strip, line.split("(")[0].split())],
 			{*map(str.strip, RE_ALLERGENS.search(line)[1].split(","))}
 		) for line in puzzle_in
 	]
 
+	ing_all_map = build_ing_all_map(puzzle_in)
+
 	for i, f in enumerate((sol0, sol1)):
-		res = f(data)
+		res = f(puzzle_in, ing_all_map)
 		if res is None:
 			continue
 		print(
