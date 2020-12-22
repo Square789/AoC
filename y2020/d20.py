@@ -191,7 +191,6 @@ def sol1(tiles):
 		y += yd
 		x = xr
 
-	
 	# Concat tiles into numpy array
 	arr_dim = tilemap_dim * CHOP_DIM
 	array = np.zeros((arr_dim, arr_dim), dtype=np.uint8)
