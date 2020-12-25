@@ -35,7 +35,7 @@ def sol0(pzin):
 def get_black_neighbors(tile_config, coords):
 	x, y = coords
 	return sum(
-		((x + step[0][y & 1], y + step[1]) in tile_config)
+		(x + step[0][y & 1], y + step[1]) in tile_config
 		for step in STEPS.values()
 	)
 
