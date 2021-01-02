@@ -4,12 +4,14 @@
 import curses
 import itertools
 import random
+import re
 from time import sleep
 import threading
 
+RE_VALID_SEATSPEC = re.compile("^[FB]{7}[LR]{3}$")
+
 BOX_URD = 0x251C
 BOX_UDL = 0x2524
-BOX_LR = 0x2500
 BOX_UD = 0x2502
 BOX_UR = 0x2514
 
@@ -30,11 +32,11 @@ ACTIVE_INFO_VALUE_MAXLN = ACTIVE_FRAME[1][0] - ACTIVE_INFO_VALUE_OFFSETX - 3
 RESULT_VALUE_MAXLN = RESULT_FRAME[1][0] - RESULT_VALUE_OFFSETX - 3
 STATUS_MAXLN = STATUS_FRAME[1][0] - 4
 
-COLOR_LIGHT_GREEN = 0xa
-COLOR_LIGHT_AQUA = 0xb
-COLOR_LIGHT_YELLOW = 0xe
-COLOR_WHITE = 7
-COLOR_GRAY = 8
+COLOR_LIGHT_GREEN = 0xA
+COLOR_LIGHT_AQUA = 0xB
+COLOR_LIGHT_YELLOW = 0xE
+COLOR_WHITE = 0x7
+COLOR_GRAY = 0x8
 COLOR_FULLWHITE = 0xF
 
 VISUALIZE_BIN_SEARCH_FIRST = 16
@@ -67,7 +69,7 @@ class StatusThread(threading.Thread):
 			if self.draw_anim:
 				self.status_win.addstr(0, 2 + self._stlen, next(self.animcycler))
 				self.status_win.refresh()
-			sleep(.2)
+			sleep(.14)
 
 
 def new_border_and_win(ws):
@@ -89,6 +91,9 @@ def new_win(tup):
 class PlaneVisualization():
 	def __init__(self, input_):
 		self.seat_specs = input_.splitlines()
+		for spec in self.seat_specs:
+			if RE_VALID_SEATSPEC.match(spec) is None:
+				raise ValueError(f"{spec!r} is not a valid seat specification.")
 
 	def run(self):
 		self.init_curses()
@@ -97,13 +102,9 @@ class PlaneVisualization():
 			self.screen.addstr("Terminal too small!")
 			self.screen.refresh()
 			sleep(1)
-			self.stop_curses()
-			return
-
-		self.setup_windows()
-
-		self.visualize()
-
+		else:
+			self.setup_windows()
+			self.visualize()
 		self.stop_curses()
 
 	def init_curses(self):
@@ -156,7 +157,7 @@ class PlaneVisualization():
 	def vis_seat_search(self, seat_ids):
 		"""
 		Takes existing/occupied seat_ids as a set, returns the free seat or
-		None if not locatable. Also visualizations.
+		None if not locatable, as well as vizualizing the process.
 		"""
 		for seat_id in range(128*8):
 			prev = seat_id - 1
@@ -195,12 +196,16 @@ class PlaneVisualization():
 			self.active_win.refresh()
 
 			if seat_id not in seat_ids and (prev in seat_ids) and (next_ in seat_ids):
+				for unvisited_seat in range(seat_id + 2, 128*8):
+					ux, uy = self.seat_to_screen_pos(unvisited_seat >> 3, unvisited_seat & 7)
+					self.plane_win.addstr(uy, ux, "[" if unvisited_seat in seat_ids else " ", curses.color_pair(0))
+				self.plane_win.refresh()
 				return seat_id
 
 			# Reset P marker
 			if prev >= 0:
 				x, y = self.seat_to_screen_pos(prev >> 3, prev & 7)
-				self.plane_win.addstr(y, x, "[" if prev in seat_ids else " ", curses.color_pair(1))
+				self.plane_win.addstr(y, x, "[" if prev in seat_ids else " ", curses.color_pair(0))
 
 			sleep(1.01 - (seat_id/1024)**.005)
 
@@ -208,6 +213,13 @@ class PlaneVisualization():
 
 	def vis_binsearch(self, iter, spec, _pos_remember, cmax):
 		"""
+		Visualize binary search by drawing rectangles all over the screen.
+		iter: How often this method was called already in the simulation run
+		spec: Seatspec as defined by the regular expression at the top.
+		_pos_remember: List that should contain the direct screen coordinates
+		for seats already processed so they aren't overdrawn again when the
+		search rect gets smaller.
+		cmax: Screen coordinates of the max seat or None.
 		This function sucks, but works
 		"""
 		#Draw initial binsearch rect
@@ -316,7 +328,7 @@ class PlaneVisualization():
 
 		status_thread.set_status("Part 1: Finding maximum seat id")
 		for i, spec in enumerate(self.seat_specs):
-			# Draw Seat Specs
+			# Draw Seat Specs into the scroller
 			if i != 0:
 				self.active_win.addstr(
 					0, SPEC_SCROLLER_OFFSETX + 2,
@@ -394,7 +406,7 @@ class PlaneVisualization():
 			for y in range(8):
 				for t in range(BACKDRAG):
 					tx, ty = self.seat_to_screen_pos(x - t, y)
-					if 0 < tx < 129 and random.randint(1, BACKDRAG*10-10) < t*10+1:
+					if 0 < tx < 129 and random.randint(1, BACKDRAG * 10 - 10) < t * 10 + 1:
 						self.plane_win.addstr(ty, tx, " ")
 			self.plane_win.refresh()
 			sleep(.006 + x/6000)
@@ -414,7 +426,7 @@ class PlaneVisualization():
 		for i, seat_id in enumerate(seat_ids):
 			row, col = seat_id >> 3, seat_id & 7
 			x, y = self.seat_to_screen_pos(row, col)
-			self.plane_win.addstr(y, x, "[", curses.color_pair(1))
+			self.plane_win.addstr(y, x, "[", curses.color_pair(2))
 			self.plane_win.refresh()
 			sleep(.001)
 
