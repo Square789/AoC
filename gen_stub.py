@@ -16,14 +16,7 @@ def sol1(pzin):
 def main():
 	puzzle_in = get_input(YEAR, DAY).strip().split("\\n")
 
-	for i, f in enumerate((sol0, sol1)):
-		res = f(puzzle_in)
-		if res is None:
-			continue
-		print(
-			f"===[AoC {year}, {{DAY}}.{{i}} result:]===\\n{{res}}\\n"
-			f"{{'='*len(str(DAY))}}============================"
-		)
+	ah.print_solution(puzzle_in, DAY, YEAR, sol0, sol1)
 """
 
 def make_file(year, day):

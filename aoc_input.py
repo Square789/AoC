@@ -7,8 +7,11 @@ class UnexpectedResponseError(RuntimeError):
 def get_input(year, day):
 	thisdir = Path(__file__).parent / f"y{year}"
 
-	with open(Path(thisdir, "input.json"), "r") as f:
-		data = {int(k): v for k, v in json.load(f).items()}
+	try:
+		with open(Path(thisdir, "input.json"), "r") as f:
+			data = {int(k): v for k, v in json.load(f).items()}
+	except OSError:
+		data = {}
 
 	if day not in data:
 		import requests
