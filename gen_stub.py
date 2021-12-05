@@ -7,16 +7,24 @@ import aoc_helpers as ah
 DAY = {day}
 YEAR = {year}
 
-def sol0(pzin):
+def sol0(setup_data, puzzle_data):
 	pass
 
-def sol1(pzin):
+def sol1(setup_data, puzzle_data):
 	pass
+
+def get_data():
+	puzzle_data = get_input(YEAR, DAY).strip().split("\n")
+	return puzzle_data
+
+def setup(puzzle_data):
+	return puzzle_data
 
 def main():
-	puzzle_in = get_input(YEAR, DAY).strip().split("\\n")
+	ah.print_solution2(get_data, setup, DAY, YEAR, sol0, sol1)
 
-	ah.print_solution(puzzle_in, DAY, YEAR, sol0, sol1)
+if __name__ == "__main__":
+	main()
 """
 
 def make_file(year, day):
