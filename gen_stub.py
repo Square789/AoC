@@ -14,7 +14,7 @@ def sol1(setup_data, puzzle_data):
 	pass
 
 def get_data():
-	puzzle_data = get_input(YEAR, DAY).strip().split("\n")
+	puzzle_data = get_input(YEAR, DAY).strip().split("\\n")
 	return puzzle_data
 
 def setup(puzzle_data):
